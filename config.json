@@ -1,0 +1,15 @@
+{
+    "low_input": 2,
+    "high_input": 250,
+    "gamma": 1.0,
+    "diapason_white": 1,
+    "cenny":true,
+    "dot_size": 7,
+    "size": 2000,
+    "interpolation": "cubic_catrom",
+    "width": true,
+    "percent": 50,
+    "spread": true,
+    "spread_size": 2800
+
+}
