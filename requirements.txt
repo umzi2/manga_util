@@ -1,5 +1,4 @@
-pepeline~=0.1.8
+pepeline~=0.1.9
 opencv-python~=4.8.1.78
-screenton-maker-rs~=0.1.5
 chainner-ext~=0.3.9
 tqdm~=4.66.1

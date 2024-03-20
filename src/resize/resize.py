@@ -1,17 +1,19 @@
 import numpy as np
 from chainner_ext import resize, ResizeFilter
 
+
 class Resize:
 
-    def __init__(self,size:int,interpolation:str,width:bool,percent:int,spread:bool,spread_size:int):
+    def __init__(self, size: int, interpolation: str, width: bool, percent: int, spread: bool, spread_size: int):
 
         self.size = size
         self.interpolation = interpolation
         self.width = width
-        self.percent = percent/100
+        self.percent = percent / 100
         self.spread = spread
         self.spread_size = spread_size
-    def run(self,img):
+
+    def run(self, img: np.ndarray) -> np.ndarray:
         interpolation_map = {
             'nearest': ResizeFilter.Nearest,
             'linear': ResizeFilter.Linear,

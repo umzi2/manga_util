@@ -1,12 +1,11 @@
 import numpy as np
-from screenton_maker import Screenton
+from pepeline import screentone
 
 
 class Halftone:
-    def __init__(self, dot_size):
+    def __init__(self, dot_size: int):
         self.dot_size = dot_size
         pass
 
-    def run(self, img):
-        dot = Screenton(self.dot_size)
-        return dot.run(img.astype(np.float32))
+    def run(self, img: np.ndarray) -> np.ndarray:
+        return screentone(img, self.dot_size)

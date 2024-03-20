@@ -4,13 +4,14 @@ from pepeline import fast_color_level
 
 
 class Sharp:
-    def __init__(self, diapason_white: int, low_input: int, high_input: int, gamma: float, cenny: bool,diapason_black:int):
+    def __init__(self, diapason_white: int, low_input: int, high_input: int, gamma: float, cenny: bool,
+                 diapason_black: int):
         self.diapason_white = diapason_white
         self.high_input = high_input
         self.low_input = low_input
         self.gamma = 1 / gamma
         self.cenny = cenny
-        self.diapason_black=diapason_black
+        self.diapason_black = diapason_black
 
     def __cenny(self, image: np.ndarray) -> np.ndarray:
         image = (image * 255).astype(np.uint8)
@@ -36,7 +37,7 @@ class Sharp:
     def __color_levels(self, image: np.ndarray) -> np.ndarray:
         return fast_color_level(image, self.low_input, self.high_input, gamma=self.gamma)
 
-    def run(self, image) -> np.ndarray:
+    def run(self, image: np.ndarray) -> np.ndarray:
 
         if self.low_input != 0 or self.high_input != 1 or self.gamma != 1:
             image = self.__color_levels(image)
