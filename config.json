@@ -3,6 +3,7 @@
     "high_input": 250,
     "gamma": 1.0,
     "diapason_white": 1,
+    "diapason_black": -1,
     "cenny":true,
     "dot_size": 7,
     "size": 2000,

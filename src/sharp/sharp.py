@@ -1,14 +1,16 @@
 import cv2
 import numpy as np
+from pepeline import fast_color_level
 
 
 class Sharp:
-    def __init__(self, diapason_white: int, low_input: int, high_input: int, gamma: float, cenny: bool):
+    def __init__(self, diapason_white: int, low_input: int, high_input: int, gamma: float, cenny: bool,diapason_black:int):
         self.diapason_white = diapason_white
-        self.high_input = high_input / 255
-        self.low_input = low_input / 255
+        self.high_input = high_input
+        self.low_input = low_input
         self.gamma = 1 / gamma
         self.cenny = cenny
+        self.diapason_black=diapason_black
 
     def __cenny(self, image: np.ndarray) -> np.ndarray:
         image = (image * 255).astype(np.uint8)
@@ -24,20 +26,24 @@ class Sharp:
         _, mask2 = cv2.threshold(median_image, 255 - self.diapason_white, 255, cv2.THRESH_BINARY)
         return np.clip(image + mask2, 0, 255).astype(np.float32) / 255
 
+    def __diapason_black(self, image: np.ndarray) -> np.ndarray:
+        _, black_mask = cv2.threshold(image, self.diapason_black, 1, cv2.THRESH_BINARY)
+        blur = cv2.GaussianBlur(black_mask, (3, 3), 0)
+        _, img = cv2.threshold(blur, 0.6, 1.0, cv2.THRESH_BINARY_INV)
+
+        return image - img
+
     def __color_levels(self, image: np.ndarray) -> np.ndarray:
-        color_levels = np.clip(((image - self.low_input) / (
-                self.high_input - self.low_input)), 0.,
-                               1.)
-        if self.gamma != 1.0:
-            color_levels = np.power(color_levels, self.gamma)
-        return color_levels
+        return fast_color_level(image, self.low_input, self.high_input, gamma=self.gamma)
 
     def run(self, image) -> np.ndarray:
 
-        if self.low_input != 0 or self.high_input != 1:
+        if self.low_input != 0 or self.high_input != 1 or self.gamma != 1:
             image = self.__color_levels(image)
         if self.cenny:
             image = self.__cenny(image)
-        if self.diapason_white != -1:
+        if self.diapason_white >= 0:
             image = self.__diapason_white(image)
+        if self.diapason_black >= 0:
+            image = self.__diapason_black(image)
         return image

@@ -7,8 +7,8 @@ import argparse
 import os
 import json
 from tqdm.contrib.concurrent import process_map
-
-
+from pepeline import read32,save32
+from time import process_time
 class Start:
     def __init__(self):
         self.in_folder = ""
@@ -40,10 +40,11 @@ class Start:
     def __json_parse(self) -> None:
         with open("config.json", "r") as f:
             json_config = json.load(f)
-        if list(json_config.keys()) != ['low_input', 'high_input', 'gamma', 'diapason_white', 'cenny', 'dot_size',
+        if list(json_config.keys()) != ['low_input', 'high_input', 'gamma', 'diapason_white',"diapason_black", 'cenny', 'dot_size',
                                         'size', 'interpolation', 'width', 'percent', 'spread', 'spread_size']:
             raise print('Not correct config')
         diapason_white = json_config["diapason_white"]
+        diapason_black = json_config["diapason_black"]
         low_input = json_config["low_input"]
         high_input = json_config["high_input"]
         gamma = json_config["gamma"]
@@ -57,7 +58,7 @@ class Start:
         spread_size = json_config["spread_size"]
         try:
 
-            self.sharp = Sharp(diapason_white, low_input, high_input, gamma, cenny)
+            self.sharp = Sharp(diapason_white, low_input, high_input, gamma, cenny,diapason_black)
 
             self.halftone = Halftone(dot_size)
 
@@ -71,15 +72,14 @@ class Start:
         try:
             folder = f"{self.in_folder}/{img_name}"
             basename = ".".join(img_name.split(".")[:-1])
-            img = cv2.imread(folder)
+            array = read32(folder,0)
 
-            if img is None:
+            if array is None:
                 return print(f"{img_name}, not supported")
-            array = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255
             array = self.sharp.run(array)
             array = self.halftone.run(array)
             array = self.resize.run(array)
-            cv2.imwrite(f'{self.out_folder}/{basename}.png', array * 255)
+            save32(array,f'{self.out_folder}/{basename}.png')
         except RuntimeError as e:
             print(e)
 
